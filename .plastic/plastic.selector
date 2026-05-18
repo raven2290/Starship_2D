@@ -1,0 +1,4 @@
+repository "Starfighter2D/Starfighter2D@2475812569480@cloud"
+  path "/"
+    br "/main"
+    co "/main"
