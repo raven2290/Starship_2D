@@ -18,26 +18,32 @@ public class PlayerController : Controller
         {
 			// increase movement speed when left shift is held down
 			if (Input.GetKey(KeyCode.LeftShift))
-			    {
-				    Pawn.Move(new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * 2);
-                    Debug.Log("increasing movement speed");
+			{
+				if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+				{
+					Pawn.Move(Pawn.transform.up * 2);
+					Debug.Log("increasing movement speed forward");
+
+				}
+				else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+				{
+					Pawn.Move(-Pawn.transform.up * 2);
+					Debug.Log("increasing movement speed backward");
+				}
 			}
 			else
-			    {
-				    Pawn.Move(new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0));
-			    }
-
-			// # up and down movement using W/S or Up/Down arrow keys
-			if (Input.GetKey(KeyCode.W)|| Input.GetKey(KeyCode.UpArrow)) 
-            {
-                Pawn.Move(Pawn.transform.up);
-                Debug.Log("moving forward");
+			{ // movement normal speed using W/S or Up/Down arrow keys
+				if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+				{
+					Pawn.Move(Pawn.transform.up);
+					Debug.Log("moving forward");
+				}
+				else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+				{
+					Pawn.Move(-Pawn.transform.up);
+					Debug.Log("moving backward");
+				}
 			}
-            else if (Input.GetKey(KeyCode.S)|| Input.GetKey(KeyCode.DownArrow))
-            {
-                Pawn.Move(-Pawn.transform.up);
-                Debug.Log("moving backward");
-            }
 
 			//# rotation using A/D or Left/Right arrow keys
             if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))

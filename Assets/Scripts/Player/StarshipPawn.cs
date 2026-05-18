@@ -21,7 +21,7 @@ public class StarshipPawn : Pawn
 
 	public override void Move(Vector3 moveVector)
 	{
-		transform.position = transform.position = (moveVector * moveSpeed) * Time.deltaTime;
+		transform.position = (moveVector * moveSpeed) * Time.deltaTime;
 	}
 
     public override void Rotate(float angle)
