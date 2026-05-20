@@ -1,16 +1,10 @@
 using UnityEngine;
 
-public class EnemyStarship : MonoBehaviour
+public class EnemyStarship : Enemy
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [Header("Enemy Starship Settings")]
+    public float moveSpeed;
+    public float rotationSpeed;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+	// TODO: add weapons functions and change sprite bullet color to red
 }

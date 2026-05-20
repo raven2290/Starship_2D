@@ -1,91 +1,80 @@
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayerController : Controller
 {
     public Pawn Pawn;
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+ 
 
     // Update is called once per frame
     void Update()
     {
-        if (Pawn != null)
-        {
-			// increase movement speed when left shift is held down
-			if (Input.GetKey(KeyCode.LeftShift))
-			{
-				if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-				{
-					Pawn.Move(Pawn.transform.up * 2);
-					Debug.Log("increasing movement speed forward");
-
-				}
-				else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-				{
-					Pawn.Move(-Pawn.transform.up * 2);
-					Debug.Log("increasing movement speed backward");
-				}
-			}
-			else
-			{ // movement normal speed using W/S or Up/Down arrow keys
-				if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-				{
-					Pawn.Move(Pawn.transform.up);
-					Debug.Log("moving forward");
-				}
-				else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-				{
-					Pawn.Move(-Pawn.transform.up);
-					Debug.Log("moving backward");
-				}
-			}
-
-			//# rotation using A/D or Left/Right arrow keys
-            if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-			{
-				Pawn.Rotate(1.0f);
-				Debug.Log("rotating left");
-			}
-			else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-			{
-				Pawn.Rotate(-1.0f);
-				Debug.Log("rotating right");
-			}
-
-			//# fire weapon using spacebar or left mouse button
-
-			if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
-			{
-				Debug.Log("firing weapon");
-			}
-
-			//# switch between weapons using number keys 1-3
-			if (Input.GetKeyDown(KeyCode.Alpha1))
-			{
-				Debug.Log("switching to weapon 1");
-			}
-			else if (Input.GetKeyDown(KeyCode.Alpha2))
-			{
-				Debug.Log("switching to weapon 2");
-			}
-			else if (Input.GetKeyDown(KeyCode.Alpha3))
-			{
-				Debug.Log("switching to weapon 3");
-				//# for only weapon 3 holding down firing button will charge up a powerful shot
-				if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
-				{
-					Debug.Log("charging weapon 3");
-				}
-			}
-
-			
-
-			
-		}
+        if (Pawn == null) return;
+        HandleMovement();
+		HandleRotation();
+        HandleFiring();
+        HandleWeaponSwitch();
+		HandleOtherEvents();
 	}
+
+	void HandleOtherEvents()
+	{
+		// quit game
+		if (Input.GetKeyDown(KeyCode.Escape))
+			Application.Quit();
+			Debug.Log("Program is quitting");
+		//wait for 5 seconds before quitting to allow the log message to be seen and then quit the Editor if running in the editor
+			//EditorApplication.isPlaying = false;
+		// TODO: add pause menu toggle
+
+	}
+
+	void HandleMovement()
+        { 
+            float speedMultiplier = Input.GetKey(KeyCode.LeftShift) ? 2f : 1f;
+
+            if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+                Pawn.Move(Pawn.transform.up * speedMultiplier);
+				Debug.Log("Moving forward");
+
+			if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+                Pawn.Move(-Pawn.transform.up * speedMultiplier);
+				Debug.Log("Moving backward");
+		}
+	void HandleRotation()
+        {
+            if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+			    Pawn.Rotate(1f);
+				Debug.Log("Rotating left");
+
+			if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+                Pawn.Rotate(-1f);
+				Debug.Log("Rotating right");
+	    }
+
+	
+	void HandleWeaponSwitch()
+	{
+		if (Input.GetKeyDown(KeyCode.Alpha1))
+			WeaponManager.instance.SwitchWeapon(0);
+		if (Input.GetKeyDown(KeyCode.Alpha2))
+			WeaponManager.instance.SwitchWeapon(1);
+		if (Input.GetKeyDown(KeyCode.Alpha3))
+			WeaponManager.instance.SwitchWeapon(2);
+	}
+
+	void HandleFiring()
+	{
+		if (Input.GetKeyDown(KeyCode.Space))
+			WeaponManager.instance.FireDown();
+		if (Input.GetKey(KeyCode.Space))
+			WeaponManager.instance.FireHeld();
+		if (Input.GetKeyUp(KeyCode.Space))
+			WeaponManager.instance.FireUp();
+		// TODO: add damage dealing and visual effects for firing
+	}
+
+	// TODO: add function for camera switching for 3D mode
 }
+
