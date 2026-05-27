@@ -4,6 +4,7 @@ public class Bullet : WeaponBase
 {
     public GameObject bulletPrefab;
     public Transform firePoint;
+	public float damage;
 
 	public override void FireDown()
 	{
@@ -30,7 +31,7 @@ public class Bullet : WeaponBase
 		Health otherObjectHealth = collision.gameObject.GetComponent<Health>();
 		if (otherObjectHealth != null)
 		{
-			otherObjectHealth.TakeDamage(10); // example damage value
+			otherObjectHealth.TakeDamage(damage); // example damage value
 		}
 	}
 }

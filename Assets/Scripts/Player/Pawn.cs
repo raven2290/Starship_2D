@@ -2,11 +2,17 @@ using UnityEngine;
 
 public abstract class Pawn : MonoBehaviour
 {
-	public abstract void Move(Vector3 moveVector);
-	public abstract void Rotate(float angle);
+	public abstract void MoveForward();
 
-	protected virtual void Start()
-	{
+	public abstract void MoveBackward();
 
-	}
+	public abstract void RotateClockwise();
+
+	public abstract void RotateCounterClockwise();
+
+	public abstract void Thrust();
+
+	public abstract void Teleport();
+
+	public abstract void Fire();
 }
