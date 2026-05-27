@@ -24,4 +24,13 @@ public class Bullet : WeaponBase
 		Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
 	}
 
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		// get the pawn on other object
+		Health otherObjectHealth = collision.gameObject.GetComponent<Health>();
+		if (otherObjectHealth != null)
+		{
+			otherObjectHealth.TakeDamage(10); // example damage value
+		}
+	}
 }
