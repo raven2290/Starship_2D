@@ -2,17 +2,23 @@ using UnityEngine;
 
 public class BulletMover : MonoBehaviour
 {
-    public float speed;
-    public float lifeTime;
+	public float moveSpeed;
+	private bool isMoving = false;
 
-    void Start()
-    {
-        Destroy(gameObject, lifeTime);
-    }
+	void Start()
+	{
+		// Optionally, you could add some initialization code here
+	}
+	void Update()
+	{
+		if (isMoving)
+		{
+			transform.position += transform.up * moveSpeed * Time.deltaTime; // move in the direction the bullet is facing
+		}
+	}
 
-    // Update is called once per frame
-    void Update()
-    {
-        transform.position += (transform.up * speed * Time.deltaTime);
-    }
+	public void StartMoving()
+	{ 
+		isMoving = true;
+	}
 }

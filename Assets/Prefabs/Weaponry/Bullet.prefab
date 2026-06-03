@@ -119,5 +119,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2355d27b4fb4ea94c85190db1c4a881f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
-  bulletPrefab: {fileID: 0}
+  bulletPrefab: {fileID: 3769761980043249005}
   firePoint: {fileID: 0}
+  damage: 0

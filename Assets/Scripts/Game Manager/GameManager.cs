@@ -7,10 +7,21 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance;
 
-	[Header("Player")]
-    public List<PlayerController> players;
+	[Header("Spawn Points")]
+    public Transform spawnPoint; // Spawn point for player
+    public Transform spawnPointES; // Spawn Point for Enemy Starship
+    public Transform spawnPointA; // Spawn Point for Astroids
+    public Transform spawnPointM; // Spawns the Meteor
+    
+    [Header("Players")]
+	public GameObject player;
+	public GameObject enemyStarships;
+	public GameObject astroid;
 
-    [Header("Player Weapons")]
+    [Header("World")]
+    public GameObject meteor;
+
+	[Header("Player Weapons")]
     public GameObject Bullet;
     public GameObject Missiles;
     public GameObject Laser;
@@ -26,8 +37,18 @@ public class GameManager : MonoBehaviour
     public float highScore;
     public int maxLives;
     public int currentLives;
-	//public List<Transform> AstroidSpawnPoints; // List of spawn points for the astroid
-	//public List<Transform> EnemySpawnPoints; // List of spawn points for the enemy starship
+
+    [Header("Game State")]
+    public GameObject TitleStateObject;
+    public GameObject MainMenuStateObject;
+    public GameObject GamePlayStateObject;
+    public GameObject OptionsStateObject;
+	public GameObject CreditStateObject;
+    public GameObject GameOverStateObject;
+	
+
+
+	public List<DamageOnCollision> damageOnCollision = new List<DamageOnCollision>();
 
 
 	public void Awake()
@@ -39,7 +60,8 @@ public class GameManager : MonoBehaviour
         else
         {
             instance = this;
-        }
+			DontDestroyOnLoad(gameObject);
+		}
 	}
 	
     
@@ -49,7 +71,14 @@ public class GameManager : MonoBehaviour
     
     void Start()
     {
-        
+        if (player != null && spawnPoint != null)
+        {
+            Instantiate(player, spawnPoint.position, spawnPoint.rotation);
+        }
+
+        SpawnPlayer();
+        SpawnEnemyStarship();
+        SpawnAstroid();
     }
 
     // Update is called once per frame
@@ -57,4 +86,78 @@ public class GameManager : MonoBehaviour
     {
         
     }
+
+    void SpawnPlayer()
+    {
+
+    }
+
+    void SpawnEnemyStarship()
+    {
+
+    }
+
+	void SpawnAstroid()
+    {
+
+    }
+    private void DeActivateAllStates()
+    {
+    // deactivate all Game States
+    TitleStateObject.SetActive(false);
+    MainMenuStateObject.SetActive(false);
+	GamePlayStateObject.SetActive(false);
+	OptionsStateObject.SetActive(false);
+	CreditStateObject.SetActive(false);
+	GameOverStateObject.SetActive(false);
+
+	}
+
+    public void ActivateTitleStateObject()
+    {
+        //deactivate all game states
+        DeActivateAllStates();
+        // activate title screen
+		TitleStateObject.SetActive(true);
+    }
+
+	public void ActivateMainMenuStateObject()
+	{
+		//deactivate all game states
+		DeActivateAllStates();
+		// activate Main Menu screen
+		MainMenuStateObject.SetActive(true);
+	}
+
+    public void ActivateOptionsStateObject()
+    {
+		//deactivate all game states
+		DeActivateAllStates();
+		// activate options screen
+		OptionsStateObject.SetActive(true);
+	}
+
+    public void ActivateGamePlayStateObject()
+    {
+		// deactivate all game states
+		DeActivateAllStates();
+        //activate Game play screen
+        GamePlayStateObject.SetActive(true);
+
+
+	}
+
+    public void ActivateCreditStateObject()
+    {
+		// deactivate all game states
+		DeActivateAllStates();
+        CreditStateObject.SetActive(true);
+	}
+
+    public void ActivateGameOverStateObject()
+    {
+        DeActivateAllStates();
+        GameOverStateObject.SetActive(true);
+	}
+
 }

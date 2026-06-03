@@ -22,38 +22,29 @@ public class Health : MonoBehaviour
     void Update()
     {
 		HandleRegen();
-    }
-
-    public void TakeDamage(float damage)
-	{
-		currentHealth -= damage;
-		Debug.Log("Took " + damage + " damage, current health is " + currentHealth);
-		if (currentHealth <= 0)
-		{
-			Die();
-		}
+		
 	}
 
-	public void heal(float healAmount)
+    
+
+	public void heal(float amount)
 	{
-		currentHealth += healAmount;
+		currentHealth += amount;
 		currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-		Debug.Log("Healed " + healAmount + " health, current health is " + currentHealth);
+		Debug.Log("Healed " + amount + " health, current health is " + currentHealth);
 	}
 
-	private void Die()
+	public void TakeDamage(float amount)
 	{
-		Death deathComponent = GetComponent<Death>();
-		Debug.Log("Player has died.");
-		// Implement death behavior here (e.g., respawn, game over screen, etc.)
-		if (deathComponent != null)
-		{
-			deathComponent.Die();
-		}
-		else
-		{
-			Debug.LogWarning("No Death component found on " + gameObject.name);
-		}
+		currentHealth -= amount;
+		Debug.Log("Took " + amount + " damage, current health is " + currentHealth);
+		currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+		Death deathcomponent = GetComponent<Death>();
+		if (deathcomponent != null)
+			{
+				if (currentHealth <= 0)
+				{ deathcomponent.Die(); }
+			}
 	}
 
 	private void HandleRegen()

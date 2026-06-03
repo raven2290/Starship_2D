@@ -2,50 +2,62 @@ using UnityEngine;
 
 public class DamageOnCollision : MonoBehaviour
 {
-    public bool selfDestructionOnCollision = false;
-	private Rigidbody2D rb;
-	public float damage;
-	private float currentHealth;
+    [Header("Damage Settings")]
+    public float damage;
+	public bool selfDestroy;
+   
 
-	private void Start()
-	{
-		rb = GetComponent<Rigidbody2D>();
-	}
+    [Header("reference")]
+    private Rigidbody2D rb;
+    public Health healthComponent;
+    public EnemyHealth enemyHealthComponent;
 
-	public void OnCollisionEnter2D(Collision2D other)
+    public void Start()
 	{
-		if (other.gameObject.CompareTag("Enemy"))
+
+		if (GameManager.instance != null)
 		{
-			// get the pawn on other object
-			Health otherObjectHealth = other.gameObject.GetComponent<Health>();
-
-			if (otherObjectHealth != null)
-			{
-				otherObjectHealth.TakeDamage(damage);
-			}
-			if (currentHealth <= 0)
-			{
-				Destroy(gameObject);
-			}
+			GameManager.instance.damageOnCollision.Add(this);
 		}
 
+
+		rb = GetComponent<Rigidbody2D>();
+		healthComponent = GetComponent<Health>();
+		enemyHealthComponent = GetComponent<EnemyHealth>();
 	}
 
 	private void OnTriggerEnter2D(Collider2D other)
 	{
-		if (other.gameObject.CompareTag("Enemy"))
+		Health otherHealth = other.GetComponent<Health>();
+		if (otherHealth != null) 
 		{
-			// get the pawn on other object
-			Health otherObjectHealth = other.gameObject.GetComponent<Health>();
-
-			if (otherObjectHealth != null)
+			otherHealth.TakeDamage(damage);
+		}
+		// health reaches 0
+		/*if (otherHealth = 0)
+		{
+			Death otherDeathComponent = other.GetComponent<Death>();
+			if (otherDeathComponent != null)
 			{
-				otherObjectHealth.TakeDamage(damage);
-			}
-			if (currentHealth <= 0)
-			{
+				otherDeathComponent.Die();
 				Destroy(gameObject);
+				Debug.Log(gameObject.name + " has died");
 			}
+		}*/
+		
+		
+		
+	}
+
+	private void OnCollisionEnter2D(Collision2D other)
+	{
+		Death otherDeathComponent = other.gameObject.GetComponent<Death>();
+
+		if (otherDeathComponent != null) 
+		{
+			otherDeathComponent.Die();
+			Destroy(gameObject);
+			Debug.Log("You Destroyed " +  gameObject.name);
 		}
 	}
 }

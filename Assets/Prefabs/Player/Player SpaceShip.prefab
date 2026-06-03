@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4621476153866472617}
   - component: {fileID: 6819342954782508058}
   - component: {fileID: 2588436129524198178}
+  - component: {fileID: 642243757743558336}
   m_Layer: 0
   m_Name: Player SpaceShip
   m_TagString: Player
@@ -110,6 +111,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   Pawn: {fileID: 4579347078256438451}
+  forward1: 119
+  forward2: 0
+  backward1: 115
+  backward2: 0
+  clockwise1: 100
+  clockwise2: 0
+  counterclockwise1: 97
+  counterclockwise2: 0
+  Shoot: 32
+  teleport: 103
+  quit: 27
+  turbo: 304
+  turbo2: 303
+  Weapon1: 257
+  Weapon2: 258
+  Weapon3: 259
 --- !u!114 &4579347078256438451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,6 +141,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StarshipPawn
   moveSpeed: 20
   rotationSpeed: 200
+  tuboSpeed: 0
+  Shooter: {fileID: 0}
 --- !u!114 &4621476153866472617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -255,6 +274,20 @@ PolygonCollider2D:
       - {x: -0.09167549, y: -0.8104284}
       - {x: -0.09940088, y: -0.8024455}
   m_UseDelaunayMesh: 1
+--- !u!114 &642243757743558336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 12655163899550942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fafb65b5631be494babea8facb1ab4fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Shooter
+  bulletToShoot: {fileID: 6711560463835406596}
+  firePoint: {fileID: 2932181902536132456}
 --- !u!1 &6887425558181932529
 GameObject:
   m_ObjectHideFlags: 0
@@ -303,6 +336,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 643351d1992300446b47668ce546e874, type: 2}
+    - target: {fileID: 8170030348274186001, guid: c9bfe7d4540ba874688bee8e120cd328, type: 3}
+      propertyPath: moveSpeed
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8475047678082241713, guid: c9bfe7d4540ba874688bee8e120cd328, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -346,10 +383,65 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3769761980043249005, guid: c9bfe7d4540ba874688bee8e120cd328, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6863544702630366869}
   m_SourcePrefab: {fileID: 100100000, guid: c9bfe7d4540ba874688bee8e120cd328, type: 3}
+--- !u!1 &1530503803627783056 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3769761980043249005, guid: c9bfe7d4540ba874688bee8e120cd328, type: 3}
+  m_PrefabInstance: {fileID: 2408743646202300157}
+  m_PrefabAsset: {fileID: 0}
+--- !u!58 &6863544702630366869
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1530503803627783056}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.045
 --- !u!4 &6120666086058316364 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8475047678082241713, guid: c9bfe7d4540ba874688bee8e120cd328, type: 3}
   m_PrefabInstance: {fileID: 2408743646202300157}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6711560463835406596 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8955921585393969145, guid: c9bfe7d4540ba874688bee8e120cd328, type: 3}
+  m_PrefabInstance: {fileID: 2408743646202300157}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1530503803627783056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2355d27b4fb4ea94c85190db1c4a881f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Bullet

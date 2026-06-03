@@ -1,6 +1,11 @@
 using UnityEngine;
 
-public class EnemyDeath : MonoBehaviour
+public class EnemyDeath : Death
 {
-	// TODO: make a death function for the enemy when health reaches 0
+	public override void Die()
+	{
+		Destroy(gameObject);
+		Debug.Log(gameObject.name + " has died.");
+	}
+
 }

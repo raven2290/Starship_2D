@@ -1,37 +1,38 @@
 using UnityEngine;
 
-public class Bullet : WeaponBase
+public class Bullet : MonoBehaviour
 {
-    public GameObject bulletPrefab;
-    public Transform firePoint;
+    public DamageOnCollision damageComponent;
+    public BulletMover bulletMoverComponent;
 	public float damage;
 
-	public override void FireDown()
+	public void Awake()
 	{
-		TryShoot();
-	}
-	public override void FireHeld()
-	{
-		
+		damageComponent = GetComponent<DamageOnCollision>();
+		bulletMoverComponent = GetComponent<BulletMover>();
 	}
 
-	public override void FireUp()
+	public void ActivateBullet()
 	{
-
+		bulletMoverComponent.StartMoving();
 	}
 
-	void TryShoot()
+	private void OnTriggerEnter(Collider other)
 	{
-		Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-	}
 
-	private void OnTriggerEnter2D(Collider2D collision)
-	{
-		// get the pawn on other object
-		Health otherObjectHealth = collision.gameObject.GetComponent<Health>();
-		if (otherObjectHealth != null)
+		// Ignore the player
+		if (other.CompareTag("Player"))
+			return;
+
+		// Damage enemies only
+		if (other.CompareTag("Enemy"))
 		{
-			otherObjectHealth.TakeDamage(damage); // example damage value
+			Health targetHealth = other.GetComponent<Health>();
+			if (targetHealth != null)
+				targetHealth.TakeDamage(damage);
 		}
+
+		// Destroy bullet on ANY valid hit
+		Destroy(gameObject);
 	}
 }

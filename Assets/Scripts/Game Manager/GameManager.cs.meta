@@ -1,2 +1,18 @@
 fileFormatVersion: 2
 guid: ded7fa5fe06087f4e854f09152f55e02
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - Bullet: {fileID: 3769761980043249005, guid: c9bfe7d4540ba874688bee8e120cd328, type: 3}
+  - Missiles: {fileID: 6869982067977024980, guid: 5d0724f87a94d794d9513b8042bcd314, type: 3}
+  - Laser: {fileID: 2966682212519416405, guid: 33cac481699dd8649ae311947ce1214d, type: 3}
+  - PlayerPawnPrefab: {fileID: 12655163899550942, guid: 7eddd9cecd0e37c4597cb30510819cf8, type: 3}
+  - PlayerControllerPrefab: {fileID: 12655163899550942, guid: 7eddd9cecd0e37c4597cb30510819cf8, type: 3}
+  - AstroidPrefab: {fileID: 4305857893197048475, guid: 456d72142da584c42a02cd48abcb3b88, type: 3}
+  - EnemyStarShipPrefab: {fileID: 3646645263646697036, guid: 358fcc34f49c4ec4e9da26e0b4ac1ad4, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
