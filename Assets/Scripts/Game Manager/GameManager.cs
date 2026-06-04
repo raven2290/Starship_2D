@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
     public float highScore;
     public int maxLives;
     public int currentLives;
+    public CameraController cameraFollow;
 
     [Header("Game State")]
     public GameObject TitleStateObject;
@@ -71,25 +72,21 @@ public class GameManager : MonoBehaviour
     
     void Start()
     {
-        if (player != null && spawnPoint != null)
-        {
-            Instantiate(player, spawnPoint.position, spawnPoint.rotation);
-        }
-
-        SpawnPlayer();
-        SpawnEnemyStarship();
-        SpawnAstroid();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-    }
+		
+	}
 
     void SpawnPlayer()
     {
-
+        GameObject player = Instantiate(PlayerPawnPrefab, spawnPoint.position, spawnPoint.rotation);
+        Debug.Log("spawned player: " + player.name);
+        cameraFollow.SetTarget(player.transform);
+        Debug.Log("Camera is following " + gameObject.name);
     }
 
     void SpawnEnemyStarship()
@@ -143,6 +140,7 @@ public class GameManager : MonoBehaviour
 		DeActivateAllStates();
         //activate Game play screen
         GamePlayStateObject.SetActive(true);
+        SpawnPlayer();
 
 
 	}
@@ -160,4 +158,8 @@ public class GameManager : MonoBehaviour
         GameOverStateObject.SetActive(true);
 	}
 
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }
