@@ -1,5 +1,5 @@
+using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -29,11 +29,17 @@ public class GameManager : MonoBehaviour
 	[Header("Prefabs")]
     public GameObject PlayerPawnPrefab;
 	public GameObject PlayerControllerPrefab;
-	public GameObject AstroidPrefab;
-    public GameObject EnemyStarShipPrefab;
+
+	[Header("Spawning")]
+	public GameObject[] spawnPrefabs;
+    public int maxSpawn;
+    public float spawnRadius;
+    public float spawnIntervals;
+
+    private List<GameObject> activeSpawns = new List<GameObject>();
 
     [Header("Game Data")]
-    public float score;
+    public int score;
     public float highScore;
     public int maxLives;
     public int currentLives;
@@ -46,6 +52,14 @@ public class GameManager : MonoBehaviour
     public GameObject OptionsStateObject;
 	public GameObject CreditStateObject;
     public GameObject GameOverStateObject;
+
+    [Header("Audio Clips")]
+    public AudioClip bulletSFX;
+    public AudioClip missileSFX;
+    public AudioClip laserSFX;
+
+    [Header("UI")]
+    public GameplayUI gameplayUI;
 	
 
 
@@ -81,6 +95,9 @@ public class GameManager : MonoBehaviour
 		
 	}
 
+    //------------
+    // Player and Weapons
+    //------------
     void SpawnPlayer()
     {
         GameObject player = Instantiate(PlayerPawnPrefab, spawnPoint.position, spawnPoint.rotation);
@@ -89,24 +106,50 @@ public class GameManager : MonoBehaviour
         Debug.Log("Camera is following " + gameObject.name);
     }
 
-    void SpawnEnemyStarship()
+	//------------
+	// Enemies, Meteors, and Asteroids
+	//------------
+    public void RemoveSpawn(GameObject obj)
     {
-
+        activeSpawns.Remove(obj);
     }
 
-	void SpawnAstroid()
-    {
+	private IEnumerator SpawnLoop()
+	{
+		while (GamePlayStateObject.activeSelf)
+		{
+			activeSpawns.RemoveAll(item => item == null);
+			if (activeSpawns.Count < maxSpawn)
+			{
+				SpawnRandomObject();
+			}
+			yield return new WaitForSeconds(spawnIntervals);
+		}
+	}
 
-    }
-    private void DeActivateAllStates()
+	private void SpawnRandomObject()
+	{
+		GameObject prefab = spawnPrefabs[Random.Range(0, spawnPrefabs.Length)];
+
+		Vector2 randomPos = Random.insideUnitCircle * spawnRadius;
+		Vector3 spawnPos = new Vector3(randomPos.x, randomPos.y, 0f);
+
+		GameObject obj = Instantiate(prefab, spawnPos, Quaternion.identity);
+		activeSpawns.Add(obj);
+	}
+
+	//------------
+	// Game States
+	//------------
+	private void DeActivateAllStates()
     {
-    // deactivate all Game States
-    TitleStateObject.SetActive(false);
-    MainMenuStateObject.SetActive(false);
-	GamePlayStateObject.SetActive(false);
-	OptionsStateObject.SetActive(false);
-	CreditStateObject.SetActive(false);
-	GameOverStateObject.SetActive(false);
+        // deactivate all Game States
+        TitleStateObject.SetActive(false);
+        MainMenuStateObject.SetActive(false);
+	    GamePlayStateObject.SetActive(false);
+	    OptionsStateObject.SetActive(false);
+	    CreditStateObject.SetActive(false);
+		GameOverStateObject.SetActive(false);
 
 	}
 
@@ -141,7 +184,7 @@ public class GameManager : MonoBehaviour
         //activate Game play screen
         GamePlayStateObject.SetActive(true);
         SpawnPlayer();
-
+		StartCoroutine(SpawnLoop());
 
 	}
 
@@ -155,11 +198,77 @@ public class GameManager : MonoBehaviour
     public void ActivateGameOverStateObject()
     {
         DeActivateAllStates();
-        GameOverStateObject.SetActive(true);
+		GameOverStateObject.SetActive(true);
 	}
 
     public void QuitGame()
     {
         Application.Quit();
     }
+
+
+	//------------
+	// Player UI
+	//------------
+	public void UpdatePlayerHealth(float current, float max)
+    {
+        gameplayUI.UpdateHealth(current, max);
+    }
+
+    public void UpdatePlayerShield(float current, float max)
+    {
+        gameplayUI.UpdateShield(current, max);
+    }
+
+	public void AddScore(int amount)
+	{
+		score += amount;
+		gameplayUI.UpdateScore(score);
+	}
+
+	public void UpdateLives(int lives)
+    {
+        gameplayUI.UpdateLives(lives);
+    }
+
+	//------------
+	// Audio UI
+	//------------
+
+    public void PlayBullet()
+    {
+        AudioManager.instance.PlaySFX(bulletSFX);
+    }
+
+	public void PlayMissile()
+	{
+		AudioManager.instance.PlaySFX(missileSFX);
+	}
+
+	public void PlayLaser()
+	{
+		AudioManager.instance.PlaySFX(laserSFX);
+	}
+
+	//------------
+	// Weapons
+	//------------
+
+	public void SetWeapon(int weaponID)
+	{
+        WeaponManager.instance.SelectWeapon(weaponID);
+        gameplayUI.SelectWeapon(weaponID + 1);
+        AudioManager.instance.PlaySFX(GetWeaponSFX(weaponID));
+	}
+
+	private AudioClip GetWeaponSFX(int weaponID)
+	{
+		switch (weaponID)
+		{
+			case 0: return bulletSFX;
+			case 1: return missileSFX;
+			case 2: return laserSFX;
+			default: return null;
+		}
+	}
 }

@@ -39,6 +39,7 @@ public class PlayerController : Controller
 	public ControlInput turboInput;
 	public ControlInput quitInput;
 	*/
+	
 
 	private void Start()
 	{
@@ -124,17 +125,28 @@ public class PlayerController : Controller
 		}
 	}
 
-	/*
-	 void HandleWeaponSwitch()
+
+	void HandleWeaponSwitch()
 	{
 		if (Input.GetKeyDown(Weapon1))
-			{ WeaponManager.instance.SwitchWeapon(0); }
+		{
+			WeaponManager.instance.SelectWeapon(0);
+			GameManager.instance.SetWeapon(0);
+		}
+
 		if (Input.GetKeyDown(Weapon2))
-			{ WeaponManager.instance.SwitchWeapon(1); }
+		{
+			WeaponManager.instance.SelectWeapon(1);
+			GameManager.instance.SetWeapon(1);
+		}
+
 		if (Input.GetKeyDown(Weapon3))
-			{ WeaponManager.instance.SwitchWeapon(2); }
+		{
+			WeaponManager.instance.SelectWeapon(2);
+			GameManager.instance.SetWeapon(2);
+		}
 	}
-	*/
+
 
 	// TODO: add function for camera switching for 3D mode
 }

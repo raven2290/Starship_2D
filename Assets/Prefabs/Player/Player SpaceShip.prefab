@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 6819342954782508058}
   - component: {fileID: 2588436129524198178}
   - component: {fileID: 642243757743558336}
+  - component: {fileID: 5511468402408813998}
   m_Layer: 0
   m_Name: Player SpaceShip
   m_TagString: Player
@@ -288,6 +289,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Shooter
   bulletToShoot: {fileID: 6711560463835406596}
   firePoint: {fileID: 2932181902536132456}
+--- !u!114 &5511468402408813998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 12655163899550942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af202c4d78080c848b1498f26fb1fa6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  maxHealth: 50
+  currentHealth: 0
+  maxShield: 50
+  currentShield: 0
+  regenRate: 5
+  regenDelay: 10
 --- !u!1 &6887425558181932529
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,7 +357,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 643351d1992300446b47668ce546e874, type: 2}
     - target: {fileID: 8170030348274186001, guid: c9bfe7d4540ba874688bee8e120cd328, type: 3}
       propertyPath: moveSpeed
-      value: 5
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 8475047678082241713, guid: c9bfe7d4540ba874688bee8e120cd328, type: 3}
       propertyPath: m_LocalPosition.x
