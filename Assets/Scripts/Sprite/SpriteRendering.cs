@@ -19,11 +19,8 @@ public class SpriteRendering : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-		if (spriteRenderer == null)
-		{
-			Debug.LogError("SpriteRenderer for " + name + " not found!");
-		}
-		else
+		if (spriteRenderer != null)
+		
 		{
 			HandleSpriteColorPawn();
 			//HandleSpriteColorAstroid();

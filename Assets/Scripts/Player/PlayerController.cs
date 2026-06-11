@@ -1,6 +1,7 @@
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using static Pawn;
 
 public class PlayerController : Controller
 {
@@ -45,10 +46,14 @@ public class PlayerController : Controller
 	{
 		StarshipPawn starshipPawn = GetComponent<StarshipPawn>();
 		Pawn = starshipPawn;
+		if (Pawn.pawnType != PawnType.Player)
+			Debug.LogWarning($"{name} has PlayerController but is not marked as Player Pawn!");
 	}
 	void Update()
     {
         if (Pawn == null) return;
+		if(Pawn.pawnType != Pawn.PawnType.Player) return;
+
         HandleMovement();
 		HandleRotation();
         HandleFiring();

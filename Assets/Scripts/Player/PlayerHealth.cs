@@ -2,73 +2,71 @@ using UnityEngine;
 
 public class PlayerHealth : Health
 {
-	//[Header("Health Settings")]
-	
-
-	[Header("Shield Settings")]
-	public float maxShield;
 	public float currentShield;
+	public float maxShield;
 
-
-	[Header("regen Settings")]
-	public float regenRate;
-	public float regenDelay;
+	[Header("Regen Settings")]
+	public float regenRate = 5f;          // Health per second
+	public float regenDelay = 3f;         // Seconds after taking damage before regen starts
 	private float lastDamageTime;
 
-	// Start is called once before the first execution of Update after the MonoBehaviour is created
-	protected override void Start()
-	{
-		base.Start();
-		currentShield = maxShield;
-		currentHealth = maxHealth;
-		Debug.Log("Max health is " + maxHealth);
-	}
-
-	// Update is called once per frame
-	void Update()
+	private void Update()
 	{
 		HandleRegen();
-
-	}
-
-
-
-	public void heal(float amount)
-	{
-		currentHealth += amount;
-		currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-		Debug.Log("Healed " + amount + " health, current health is " + currentHealth);
-
-		//healthBar.fillAmount = currentHealth;
 	}
 
 	public override void TakeDamage(float amount)
 	{
-		//Shield starts to take damage
-		if (currentShield> 0)
+		// Shield absorbs damage first
+		if (currentShield > 0)
 		{
-			float ShieldDamage = Mathf.Min(amount, currentShield);
-			currentShield -= ShieldDamage;
-			amount -= ShieldDamage;
+			float shieldDamage = Mathf.Min(amount, currentShield);
+			currentShield -= shieldDamage;
+			amount -= shieldDamage;
 
 			GameManager.instance.gameplayUI.UpdateShield(currentShield, maxShield);
-
 		}
 
-		// remainining damage to health
-		if (amount>0)
+		// Remaining damage affects health
+		if (amount > 0)
 		{
-			base.TakeDamage(amount);
+			currentHealth -= amount;
+			currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+			GameManager.instance.gameplayUI.UpdateHealth(currentHealth, maxHealth);
+			Debug.Log($"Player took {amount} damage, current health is {currentHealth}");
+
+			if (currentHealth <= 0)
+			{
+				Die();
+			}
+		}
+	}
+
+
+    protected override void Die()
+    {
+        Debug.Log("Player destroyed!");
+        GameManager.instance.ActivateGameOverStateObject();
+        Destroy(gameObject);
+    }
+
+	void HandleRegen()
+	{
+		// Only regen if enough time has passed since last damage
+		if (Time.time - lastDamageTime >= regenDelay && currentHealth < maxHealth)
+		{
+			currentHealth += regenRate * Time.deltaTime;
+			currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 			GameManager.instance.gameplayUI.UpdateHealth(currentHealth, maxHealth);
 		}
 	}
 
-	private void HandleRegen()
-	{
-		if (Time.time - lastDamageTime > regenDelay)
-		{
-			currentHealth += regenRate * Time.deltaTime;
-			currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-		}
-	}
+
+	public void Heal(float amount)
+    {
+        currentHealth += amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        Debug.Log($"Healed {amount} health, current health is {currentHealth}");
+        GameManager.instance.gameplayUI.UpdateHealth(currentHealth, maxHealth);
+    }
 }

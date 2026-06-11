@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4908126812825585359}
   - component: {fileID: 3828181229148657740}
   - component: {fileID: 2748997261347624360}
+  - component: {fileID: 3170789028668135631}
   m_Layer: 0
   m_Name: Missile
   m_TagString: Untagged
@@ -157,6 +158,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &3170789028668135631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4514255479650142617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82c98682867cb9148b1be8e0abba6f04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MissileWeapon
+  weaponName: 
+  fireRate: 1
+  missilePrefab: {fileID: 0}
+  firePoint: {fileID: 0}
 --- !u!1 &6869982067977024980
 GameObject:
   m_ObjectHideFlags: 0
@@ -166,13 +183,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7113285369764057943}
-  - component: {fileID: 4996644835180627754}
-  - component: {fileID: 5507875310780680728}
   - component: {fileID: 188507837050366925}
   - component: {fileID: -8187377439457240278}
+  - component: {fileID: 3329725803588089367}
   m_Layer: 0
   m_Name: Missile
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -193,36 +209,6 @@ Transform:
   - {fileID: 4760212869477500145}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4996644835180627754
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6869982067977024980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50e46d8241ffbfc48a856ae07e415dad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Missile
-  missilePrefab: {fileID: 6869982067977024980}
-  firePoint: {fileID: 0}
-  target: {fileID: 0}
-  fireRate: 1
---- !u!114 &5507875310780680728
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6869982067977024980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02dcf479b2e07fb43b23cd3784ef62d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MissileMover
-  speed: 15
-  turnSpeed: 50
 --- !u!70 &188507837050366925
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -287,3 +273,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &3329725803588089367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6869982067977024980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82c98682867cb9148b1be8e0abba6f04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MissileWeapon
+  weaponName: Missile
+  fireRate: 0
+  missilePrefab: {fileID: 6869982067977024980}
+  firePoint: {fileID: 0}

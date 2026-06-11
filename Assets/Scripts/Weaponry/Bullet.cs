@@ -5,6 +5,7 @@ public class Bullet : MonoBehaviour
     public DamageOnCollision damageComponent;
     public BulletMover bulletMoverComponent;
 	public float damage;
+	public bool destroyOnHit = true;
 
 	public void Awake()
 	{
@@ -17,22 +18,40 @@ public class Bullet : MonoBehaviour
 		bulletMoverComponent.StartMoving();
 	}
 
-	private void OnTriggerEnter(Collider other)
+	private void OnCollisionEnter2D(Collision2D collision)
 	{
+		GameObject other = collision.gameObject;
 
-		// Ignore the player
-		if (other.CompareTag("Player"))
-			return;
+		// Try to get ANY Health component (Enemy, Asteroid, Meteor, etc.)
+		Health targetHealth = other.GetComponent<Health>();
 
-		// Damage enemies only
-		if (other.CompareTag("Enemy"))
-		{
-			Health targetHealth = other.GetComponent<Health>();
-			if (targetHealth != null)
-				targetHealth.TakeDamage(damage);
-		}
+        if (targetHealth != null)
+        {
+            // Deal damage
+            targetHealth.TakeDamage(damage);
 
-		// Destroy bullet on ANY valid hit
-		Destroy(gameObject);
+            // If the object died, award score
+            if (targetHealth.currentHealth <= 0)
+            {
+                AwardScore(other);
+			}
+        }
+
+        // Destroy bullet after hit
+        if (destroyOnHit)
+			Destroy(gameObject);
+    }
+
+    void AwardScore(GameObject obj)
+	{
+		if (obj.CompareTag("Enemy"))
+			GameManager.instance.AddScore(10);
+
+		else if (obj.CompareTag("Asteroid"))
+			GameManager.instance.AddScore(5);
+
+		else if (obj.CompareTag("Meteor"))
+			GameManager.instance.AddScore(25);
 	}
+	
 }

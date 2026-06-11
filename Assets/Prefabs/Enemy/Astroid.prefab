@@ -11,13 +11,14 @@ GameObject:
   - component: {fileID: 8806903503766833379}
   - component: {fileID: 5876257210150422228}
   - component: {fileID: 4186551378027979964}
-  - component: {fileID: 4411741551174416453}
-  - component: {fileID: 615289065861797324}
   - component: {fileID: 5524492738149842912}
   - component: {fileID: 5979302198868799885}
-  m_Layer: 0
+  - component: {fileID: 9026558612790285736}
+  - component: {fileID: 2508767940831534418}
+  - component: {fileID: 8708861586167775602}
+  m_Layer: 9
   m_Name: Astroid
-  m_TagString: Enemy
+  m_TagString: Asteroid
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 4305857893197048475}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -17.021223, y: 7.2614155, z: 0}
+  m_LocalPosition: {x: -5.6, y: 2.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -108,36 +109,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a635a0650e4bc0b49bc86935a0e89baf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Astroid
---- !u!114 &4411741551174416453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4305857893197048475}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: feccdc4e8557bbf44a6a574301f60720, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DamageOnCollision
-  damage: 5
-  selfDestroy: 0
-  healthComponent: {fileID: 0}
-  enemyHealthComponent: {fileID: 0}
---- !u!114 &615289065861797324
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4305857893197048475}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa2fb925c23bf334f94b3c2099a6fad6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  maxHealth: 10
-  currentHealth: 0
+  minDriftSpeed: 0.5
+  maxDriftSpeed: 2
+  minRotationSpeed: -45
+  maxRotationSpeed: 45
 --- !u!50 &5524492738149842912
 Rigidbody2D:
   serializedVersion: 5
@@ -185,19 +160,58 @@ CircleCollider2D:
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 64
   m_ForceReceiveLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 64
   m_ContactCaptureLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 1.09
+--- !u!114 &9026558612790285736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305857893197048475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 579800e82a4b14c46ab95970dc34f633, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AsteroidHealth
+  maxHealth: 25
+  currentHealth: 0
+--- !u!114 &2508767940831534418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305857893197048475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 786b12d94115c7b47823bb09c3c9951c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AsteroidCollision
+  damageAmount: 15
+--- !u!114 &8708861586167775602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305857893197048475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e234a84ba22ac754389ab132c581e63f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AstroidDestroy

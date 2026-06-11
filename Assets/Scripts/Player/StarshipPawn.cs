@@ -20,6 +20,7 @@ public class StarshipPawn : Pawn
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
     {
+		pawnType = PawnType.Player;
 		//Instantiate(WeaponManager.instance.weapons[0].gameObject);
 
 		//emL = ThrusterL.emission;

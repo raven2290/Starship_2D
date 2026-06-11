@@ -5,8 +5,8 @@ using UnityEngine.UI;
 public class GameplayUI : MonoBehaviour
 {
 	[Header("Bars")]
-	public Slider healthBar;
-	public Slider shieldBar;
+	public Image healthBar;
+	public Image shieldBar;
 	[Header("Text")]
 	public TMP_Text scoreText;
 	public TMP_Text livesText;
@@ -35,12 +35,12 @@ public class GameplayUI : MonoBehaviour
 	//-----------------------
 	public void UpdateHealth(float current, float max)
 	{
-		healthBar.value = current/max;
+		healthBar.fillAmount = current/max;
 	}
 
 	public void UpdateShield(float current, float max)
 	{
-		shieldBar.value = current/max;
+		shieldBar.fillAmount = current/max;
 	}
 
 	//-----------------------

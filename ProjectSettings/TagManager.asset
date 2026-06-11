@@ -6,19 +6,21 @@ TagManager:
   tags:
   - Enemy
   - World
+  - Asteroid
+  - Meteor
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Meteor
   - Water
   - UI
-  - World
-  - Player
   - PlayerBullet
   - Enemy
-  - EnemyBullet
+  - Player
   - 
+  - EnemyBullet
+  - Asteroid
   - 
   - 
   - 

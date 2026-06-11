@@ -7,6 +7,8 @@ public abstract class Pawn : MonoBehaviour
 	public float rotationSpeed; // speed of the player's rotation
 	public float tuboSpeed;
 	
+	public enum PawnType { Player, Enemy }
+	public PawnType pawnType;
 
 	public abstract void MoveForward();
 

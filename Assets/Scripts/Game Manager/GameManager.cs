@@ -8,10 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
 	[Header("Spawn Points")]
-    public Transform spawnPoint; // Spawn point for player
-    public Transform spawnPointES; // Spawn Point for Enemy Starship
-    public Transform spawnPointA; // Spawn Point for Astroids
-    public Transform spawnPointM; // Spawns the Meteor
+	public Transform spawnPoint; // spawn point for player
     
     [Header("Players")]
 	public GameObject player;
@@ -19,7 +16,7 @@ public class GameManager : MonoBehaviour
 	public GameObject astroid;
 
     [Header("World")]
-    public GameObject meteor;
+    public GameObject meteor; // 10x10 world object
 
 	[Header("Player Weapons")]
     public GameObject Bullet;
@@ -31,7 +28,7 @@ public class GameManager : MonoBehaviour
 	public GameObject PlayerControllerPrefab;
 
 	[Header("Spawning")]
-	public GameObject[] spawnPrefabs;
+	public GameObject[] spawnPrefabs; // enemy ships + asteroids
     public int maxSpawn;
     public float spawnRadius;
     public float spawnIntervals;
@@ -78,64 +75,101 @@ public class GameManager : MonoBehaviour
 			DontDestroyOnLoad(gameObject);
 		}
 	}
-	
-    
-    
-    
-    
-    
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-		
+
+
+	//------------
+	// Player and Weapons
+	//------------
+	public void SpawnPlayer()
+	{
+		GameObject newPlayer = Instantiate(PlayerPawnPrefab, spawnPoint.position, Quaternion.identity);
+
+		CameraController cam = Camera.main.GetComponent<CameraController>();
+		cam.SetTarget(newPlayer.transform);
 	}
 
-    //------------
-    // Player and Weapons
-    //------------
-    void SpawnPlayer()
-    {
-        GameObject player = Instantiate(PlayerPawnPrefab, spawnPoint.position, spawnPoint.rotation);
-        Debug.Log("spawned player: " + player.name);
-        cameraFollow.SetTarget(player.transform);
-        Debug.Log("Camera is following " + gameObject.name);
-    }
+	//------------
+	// spawn assistance
+	//------------
+
+	private Vector3 GetSpawnPosition(float minDistance, float maxDistance)
+	{
+		if (player==null) return Vector3.zero;
+
+		Vector2 dir = Random.insideUnitCircle.normalized;
+		float dist = Random.Range(minDistance, maxDistance);
+
+		return player.transform.position + new Vector3(dir.x, dir.y, 0f) * dist;
+	}
+
+	// check if position is clear for meteor placement
+	private bool IsPositionClear(Vector3 position, float radius)
+	{
+		foreach(GameObject obj in activeSpawns)
+		{
+			if (obj == null) continue;
+			if (Vector3.Distance(obj.transform.position, position) < radius)
+				return false;
+		}
+		return true;
+	}
 
 	//------------
 	// Enemies, Meteors, and Asteroids
 	//------------
-    public void RemoveSpawn(GameObject obj)
-    {
-        activeSpawns.Remove(obj);
-    }
+	
+	// spawn enemy ships or asteroids
+	private void SpawnEnemyOrAsteroid()
+	{
+		GameObject prefab = spawnPrefabs[Random.Range(0, spawnPrefabs.Length)];
+
+		float minDist = 10f;
+		float maxDist = 50f;
+
+		Vector3 spawnPos = GetSpawnPosition(minDist, maxDist);
+
+		GameObject obj = Instantiate(prefab, spawnPos, Quaternion.identity);
+			activeSpawns.Add(obj);
+	}
+
+	//spawn meteor 
+	private void SpawnMeteor()
+	{
+		float minDist = 30f;
+		float maxDist = 100f;
+		float meteorRadius = 12f; // safe space for object
+
+		Vector3 spawnPos;
+		int attempts = 0;
+
+		do
+		{
+			spawnPos = GetSpawnPosition(minDist, maxDist);
+			attempts++;
+		}
+		while (!IsPositionClear(spawnPos, meteorRadius) && attempts < 20);
+
+		GameObject obj = Instantiate(meteor, spawnPos, Quaternion.identity);
+		activeSpawns.Add(obj);
+	}
 
 	private IEnumerator SpawnLoop()
 	{
 		while (GamePlayStateObject.activeSelf)
 		{
 			activeSpawns.RemoveAll(item => item == null);
+
 			if (activeSpawns.Count < maxSpawn)
 			{
-				SpawnRandomObject();
+				if (Random.value < 0.10f) // 10% chance meteor
+					SpawnMeteor();
+				else
+					SpawnEnemyOrAsteroid();
 			}
+
 			yield return new WaitForSeconds(spawnIntervals);
 		}
-	}
-
-	private void SpawnRandomObject()
-	{
-		GameObject prefab = spawnPrefabs[Random.Range(0, spawnPrefabs.Length)];
-
-		Vector2 randomPos = Random.insideUnitCircle * spawnRadius;
-		Vector3 spawnPos = new Vector3(randomPos.x, randomPos.y, 0f);
-
-		GameObject obj = Instantiate(prefab, spawnPos, Quaternion.identity);
-		activeSpawns.Add(obj);
 	}
 
 	//------------
