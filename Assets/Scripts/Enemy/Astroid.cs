@@ -2,32 +2,50 @@ using UnityEngine;
 
 public class Astroid : MonoBehaviour
 {
-	[Header("Asteroid Speed")]
-	public float minDriftSpeed;
-	public float maxDriftSpeed;
+	[Header("Movement")]
+	public float driftSpeed = 3f;
+	public float rotationSpeed = 50f;
 
-	public float minRotationSpeed;
-	public float maxRotationSpeed;
+	[Header("Homing")]
+	public float homingStrength = 0.25f; // 0 = no homing, 1 = strong homing
 
-	private Vector2 driftDirection;
-	private float driftSpeed;
-	private float rotationSpeed;
+	[Header("Despawn")]
+	public float maxDistanceFromPlayer = 120f;
+
+	private Rigidbody2D rb;
 
 	void Start()
 	{
-		// random drift direction
-		driftDirection = Random.insideUnitCircle.normalized;
-		//random drift speed
-		driftSpeed = Random.Range(minDriftSpeed, maxDriftSpeed);
-		//random rotation speed
-		rotationSpeed = Random.Range(minRotationSpeed, maxRotationSpeed);
+		rb = GetComponent<Rigidbody2D>();
+
+		// Give asteroid a random drift direction
+		Vector2 randomDir = Random.insideUnitCircle.normalized;
+		rb.linearVelocity = randomDir * driftSpeed;
+
+		// Random rotation
+		rb.angularVelocity = rotationSpeed * (Random.value > 0.5f ? 1 : -1);
 	}
 
 	void Update()
 	{
-		// move asteroid
-		transform.Translate(driftDirection * driftSpeed * Time.deltaTime, Space.World);
-		//rotate asteroid
-		transform.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime);
+		if (GameManager.instance.player == null)
+			return;
+
+		Transform player = GameManager.instance.player.transform;
+
+		// 1. Light homing toward player
+		Vector2 toPlayer = (player.position - transform.position).normalized;
+		Vector2 newDir = Vector2.Lerp(rb.linearVelocity.normalized, toPlayer, homingStrength * Time.deltaTime);
+
+		rb.linearVelocity = newDir * driftSpeed;
+
+		// 2. Auto-despawn if too far
+		float dist = Vector3.Distance(transform.position, player.position);
+
+		if (dist > maxDistanceFromPlayer)
+		{
+			Destroy(gameObject);
+			return;
+		}
 	}
 }

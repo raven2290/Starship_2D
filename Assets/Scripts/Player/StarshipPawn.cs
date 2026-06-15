@@ -3,21 +3,55 @@ using UnityEngine;
 public class StarshipPawn : Pawn
 {
 
-	public Shooter Shooter;
-	private Vector3 randomPosition; // variable to store the random position for teleportation
-	
+	public Shooter Shooter; // stays public so you can still see it in Inspector
+
+	void Awake()
+	{
+		if (Shooter == null)
+		{
+			Shooter = GetComponent<Shooter>();
+		}
+
+		if (Shooter == null)
+		{
+			Shooter = GetComponentInChildren<Shooter>();
+		}
+
+		if (Shooter == null)
+		{
+			Shooter = GetComponentInParent<Shooter>();
+		}
+
+		if (Shooter == null)
+		{
+			Debug.LogError("Shooter component missing on Player!");
+		}
 
 
-	/*
-	[Header("Thruster Effects")]
-	public ParticleSystem ThrusterL;
-	public ParticleSystem ThrusterR;
-	private ParticleSystem.EmissionModule emL;
-	private ParticleSystem.EmissionModule emR;*/
+	}
 
+	public override void Shoot()
+	{
+		if (Shooter == null)
+		{
+			Debug.LogError("Shooter reference missing!");
+			return;
+		}
 
+		if (Shooter.bulletToShoot == null)
+		{
+			Debug.LogWarning("Bullet prefab missing — reassigning...");
+			Shooter.bulletToShoot = Resources.Load<Bullet>("Prefabs/Bullet");
+		}
 
-	// Start is called once before the first execution of Update after the MonoBehaviour is created
+		Bullet bulletInstance = Instantiate(
+			Shooter.bulletToShoot,
+			Shooter.firePoint.position,
+			Shooter.firePoint.rotation
+		);
+
+		bulletInstance.ActivateBullet();
+	}
 	void Start()
     {
 		pawnType = PawnType.Player;
@@ -66,19 +100,6 @@ public class StarshipPawn : Pawn
 	public override void Thrust()
 	{
 		
-	}
-
-	
-
-	public override void Shoot()
-	{
-		Shooter shooter = GetComponent<Shooter>();
-		if (shooter != null)
-		{
-			Bullet bulletInstance = Instantiate(shooter.bulletToShoot, shooter.firePoint.position, shooter.firePoint.rotation);
-			bulletInstance.ActivateBullet();
-			Debug.Log("Bullet fired!");
-		}
 	}
 
 	public override void Teleport()

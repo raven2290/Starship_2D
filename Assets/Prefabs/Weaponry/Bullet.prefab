@@ -124,7 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
   damageComponent: {fileID: 0}
   bulletMoverComponent: {fileID: 0}
-  damage: 15
+  damage: 100
   destroyOnHit: 1
 --- !u!82 &-2949584714445794175
 AudioSource:
@@ -299,4 +299,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BulletCollider
   useTrigger: 1
-  damage: 15
+  damage: 100

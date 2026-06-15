@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -32,8 +33,11 @@ public class GameManager : MonoBehaviour
     public int maxSpawn;
     public float spawnRadius;
     public float spawnIntervals;
+	public float minSpawnDistanceFromPlayer = 10f;
+	public float maxSpawnDistanceFromPlayer = 50f;
 
-    private List<GameObject> activeSpawns = new List<GameObject>();
+
+	private List<GameObject> activeSpawns = new List<GameObject>();
 
     [Header("Game Data")]
     public int score;
@@ -57,7 +61,13 @@ public class GameManager : MonoBehaviour
 
     [Header("UI")]
     public GameplayUI gameplayUI;
-	
+
+	[Header("Kill Tracking")]
+	public int killsNeededForMissiles = 5;
+	public int currentKills = 0;
+
+	public Image missileFillBar;
+
 
 
 	public List<DamageOnCollision> damageOnCollision = new List<DamageOnCollision>();
@@ -89,29 +99,53 @@ public class GameManager : MonoBehaviour
 		cam.SetTarget(newPlayer.transform);
 	}
 
+	public void DestroyAllPlayerObjects()
+	{
+		GameObject oldPlayer = GameObject.FindGameObjectWithTag("Player");
+		if (oldPlayer != null)
+			Destroy(oldPlayer);
+	}
 	//------------
 	// spawn assistance
 	//------------
 
-	private Vector3 GetSpawnPosition(float minDistance, float maxDistance)
+	private Vector3 GetSafeSpawnPosition(float minDistance, float maxDistance, float objectRadius)
 	{
-		if (player==null) return Vector3.zero;
+		if (player == null) return Vector3.zero;
 
-		Vector2 dir = Random.insideUnitCircle.normalized;
-		float dist = Random.Range(minDistance, maxDistance);
+		Vector3 spawnPos;
+		int attempts = 0;
 
-		return player.transform.position + new Vector3(dir.x, dir.y, 0f) * dist;
+		do
+		{
+			Vector2 dir = Random.insideUnitCircle.normalized;
+			float dist = Random.Range(minDistance, maxDistance);
+
+			spawnPos = player.transform.position + new Vector3(dir.x, dir.y, 0f) * dist;
+
+			attempts++;
+			if (attempts > 30)
+				break;
+
+		} while (!IsSpawnPositionValid(spawnPos, objectRadius));
+
+		return spawnPos;
 	}
 
-	// check if position is clear for meteor placement
-	private bool IsPositionClear(Vector3 position, float radius)
+	private bool IsSpawnPositionValid(Vector3 pos, float radius)
 	{
-		foreach(GameObject obj in activeSpawns)
+		// 1. Too close to player?
+		if (Vector3.Distance(pos, player.transform.position) < radius)
+			return false;
+
+		// 2. Overlapping existing spawns?
+		foreach (GameObject obj in activeSpawns)
 		{
 			if (obj == null) continue;
-			if (Vector3.Distance(obj.transform.position, position) < radius)
+			if (Vector3.Distance(obj.transform.position, pos) < radius)
 				return false;
 		}
+
 		return true;
 	}
 
@@ -124,13 +158,14 @@ public class GameManager : MonoBehaviour
 	{
 		GameObject prefab = spawnPrefabs[Random.Range(0, spawnPrefabs.Length)];
 
-		float minDist = 10f;
-		float maxDist = 50f;
+		float minDist = minSpawnDistanceFromPlayer;
+		float maxDist = maxSpawnDistanceFromPlayer;
+		float radius = 3f; // safe radius for enemies/asteroids
 
-		Vector3 spawnPos = GetSpawnPosition(minDist, maxDist);
+		Vector3 spawnPos = GetSafeSpawnPosition(minDist, maxDist, radius);
 
 		GameObject obj = Instantiate(prefab, spawnPos, Quaternion.identity);
-			activeSpawns.Add(obj);
+		activeSpawns.Add(obj);
 	}
 
 	//spawn meteor 
@@ -138,17 +173,9 @@ public class GameManager : MonoBehaviour
 	{
 		float minDist = 30f;
 		float maxDist = 100f;
-		float meteorRadius = 12f; // safe space for object
+		float meteorRadius = 12f;
 
-		Vector3 spawnPos;
-		int attempts = 0;
-
-		do
-		{
-			spawnPos = GetSpawnPosition(minDist, maxDist);
-			attempts++;
-		}
-		while (!IsPositionClear(spawnPos, meteorRadius) && attempts < 20);
+		Vector3 spawnPos = GetSafeSpawnPosition(minDist, maxDist, meteorRadius);
 
 		GameObject obj = Instantiate(meteor, spawnPos, Quaternion.identity);
 		activeSpawns.Add(obj);
@@ -170,6 +197,25 @@ public class GameManager : MonoBehaviour
 
 			yield return new WaitForSeconds(spawnIntervals);
 		}
+	}
+
+	public void DestroyAllWorldObjects()
+	{
+		var objects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+		
+		// destroy all GameObjects
+		foreach (GameObject obj in objects)
+		{
+			if (obj.CompareTag("Enemy") ||
+			obj.CompareTag("Meteor") ||
+			obj.CompareTag("Asteroid") ||
+			obj.CompareTag("EnemyBullet") ||
+			obj.CompareTag("PlayerBullet"))
+			{
+				Destroy(obj);
+			}
+		}
+		activeSpawns.Clear();
 	}
 
 	//------------
@@ -215,6 +261,9 @@ public class GameManager : MonoBehaviour
     {
 		// deactivate all game states
 		DeActivateAllStates();
+
+		DestroyAllPlayerObjects();
+
         //activate Game play screen
         GamePlayStateObject.SetActive(true);
         SpawnPlayer();
@@ -231,7 +280,17 @@ public class GameManager : MonoBehaviour
 
     public void ActivateGameOverStateObject()
     {
-        DeActivateAllStates();
+		DeActivateAllStates();
+
+		// Stop spawning
+		StopAllCoroutines();
+
+		// Destroy everything in the world
+		DestroyAllWorldObjects();
+
+		// Destroy the player
+		DestroyAllPlayerObjects();
+
 		GameOverStateObject.SetActive(true);
 	}
 
@@ -259,6 +318,23 @@ public class GameManager : MonoBehaviour
 		score += amount;
 		gameplayUI.UpdateScore(score);
 	}
+
+	public void AddKill()
+	{
+		currentKills++;
+
+		// Update fill bar
+		float progress = (float)currentKills / killsNeededForMissiles;
+		missileFillBar.fillAmount = progress;
+
+		// Unlock missiles when full
+		if (progress >= 1f)
+		{
+			WeaponsManager.instance.UnlockWeapon(1);
+		}
+	}
+
+
 
 	public void UpdateLives(int lives)
     {

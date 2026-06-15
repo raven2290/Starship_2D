@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BulletCollider : MonoBehaviour
 {
-	public bool useTrigger = true; // switch this ON/OFF when spawning
+	public bool useTrigger = true;
 	public int damage = 10;
 
 	private Collider2D col;
@@ -31,6 +31,10 @@ public class BulletCollider : MonoBehaviour
 	{
 		if (!useTrigger) return;
 
+		// Ignore player completely
+		if (other.CompareTag("Player"))
+			return;
+
 		HandleHit(other.gameObject);
 	}
 
@@ -41,6 +45,10 @@ public class BulletCollider : MonoBehaviour
 	{
 		if (useTrigger) return;
 
+		// Ignore player completely
+		if (collision.gameObject.CompareTag("Player"))
+			return;
+
 		HandleHit(collision.gameObject);
 	}
 
@@ -49,18 +57,24 @@ public class BulletCollider : MonoBehaviour
 	// -------------------------
 	private void HandleHit(GameObject hitObject)
 	{
-		// Ignore self or friendly layers if needed
-		if (hitObject.CompareTag("Player"))
+		// Ignore meteors (bullets do nothing)
+		if (hitObject.CompareTag("Meteor"))
 			return;
 
-		// Meteor = instant destruction (no damage system)
-		if (hitObject.CompareTag("Meteor"))
+		// Enemy ships
+		if (hitObject.CompareTag("Enemy"))
 		{
-			// Meteor kills player, but bullets should NOT affect meteors
-			return;
+			Health h = hitObject.GetComponent<Health>();
+    if (h != null)
+        h.TakeDamage(damage);
+
+    GameManager.instance.AddScore(10); // add points per kill
+    GameManager.instance.AddKill(); // optional if you track kills
+    Destroy(gameObject);
+    return;
 		}
 
-		// Asteroid = takes damage (if you want it to)
+		// Asteroids
 		if (hitObject.CompareTag("Asteroid"))
 		{
 			Health h = hitObject.GetComponent<Health>();
@@ -71,28 +85,7 @@ public class BulletCollider : MonoBehaviour
 			return;
 		}
 
-		// Enemy ships = take damage
-		if (hitObject.CompareTag("Enemy"))
-		{
-			Health h = hitObject.GetComponent<Health>();
-			if (h != null)
-				h.TakeDamage(damage);
-
-			Destroy(gameObject);
-			return;
-		}
-
-		// Generic fallback for anything with Health
-		Health generic = hitObject.GetComponent<Health>();
-		if (generic != null)
-		{
-			generic.TakeDamage(damage);
-			Destroy(gameObject);
-			return;
-		}
-
-		// If it hits something irrelevant, just destroy the bullet
-		Destroy(gameObject);
+		// Ignore EVERYTHING ELSE
+		// (walls, player, enemy-player collisions, etc.)
 	}
-
 }

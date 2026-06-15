@@ -5,7 +5,17 @@ public class Shooter : MonoBehaviour
     public Bullet bulletToShoot;
     public Transform firePoint;
 
-    public void Shoot()
+	void Awake()
+	{
+		if (bulletToShoot == null)
+		{
+			bulletToShoot = Resources.Load<Bullet>("Prefabs/Bullet");
+			if (bulletToShoot == null)
+				Debug.LogError("Shooter could not find Bullet prefab in Resources/Prefabs!");
+		}
+	}
+
+	public void Shoot()
     {
 		if (bulletToShoot != null && firePoint != null)
 		{
