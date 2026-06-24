@@ -5323,6 +5323,8 @@ MonoBehaviour:
   maxSpawn: 5
   spawnRadius: 10
   spawnIntervals: 0
+  minSpawnDistanceFromPlayer: 10
+  maxSpawnDistanceFromPlayer: 50
   score: 0
   highScore: 0
   maxLives: 5
@@ -5338,6 +5340,9 @@ MonoBehaviour:
   missileSFX: {fileID: 8300000, guid: 281e15cc92254794eaf05caf4d044b76, type: 3}
   laserSFX: {fileID: 8300000, guid: bb6cdd13aeb95f743847b1cd460889bc, type: 3}
   gameplayUI: {fileID: 1592054425}
+  killsNeededForMissiles: 5
+  currentKills: 0
+  missileFillBar: {fileID: 1968356223}
   damageOnCollision: []
 --- !u!1 &963408828
 GameObject:
@@ -13100,13 +13105,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1445526766}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77e6106b237fc1649af8f9807dab7d4f, type: 3}
+  m_Script: {fileID: 11500000, guid: e6262f0c5a046554ca225b52afab6107, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WeaponManager
-  Weapons:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponsManager
+  weapons:
+  - {fileID: 3769761980043249005, guid: c9bfe7d4540ba874688bee8e120cd328, type: 3}
+  - {fileID: 6869982067977024980, guid: 5d0724f87a94d794d9513b8042bcd314, type: 3}
+  - {fileID: 2966682212519416405, guid: 33cac481699dd8649ae311947ce1214d, type: 3}
+  unlocked: 010000
   currentWeapon: 0
 --- !u!1 &1467861731
 GameObject:
